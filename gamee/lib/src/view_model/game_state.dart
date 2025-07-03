@@ -10,7 +10,8 @@ class GameState {
   final List<Bullet> bullets;
   final int coinBalance;
   final Set<int> purchasedSkinIds;
-  final Set<int> purchasedUpgradeIds;
+  final int attackSpeedLevel;
+  final int damageLevel;
   final int level;
   final GameMode mode;
 
@@ -22,7 +23,8 @@ class GameState {
     this.bullets = const [],
     this.coinBalance = 0,
     this.purchasedSkinIds = const {},
-    this.purchasedUpgradeIds = const {},
+    this.attackSpeedLevel = 0,
+    this.damageLevel = 0,
     this.level = 1,
     this.mode = GameMode.arcade,
   });
@@ -35,7 +37,8 @@ class GameState {
     List<Bullet>? bullets,
     int? coinBalance,
     Set<int>? purchasedSkinIds,
-    Set<int>? purchasedUpgradeIds,
+    int? attackSpeedLevel,
+    int? damageLevel,
     int? level,
     GameMode? mode,
   }) {
@@ -47,8 +50,8 @@ class GameState {
       bullets: bullets ?? this.bullets,
       coinBalance: coinBalance ?? this.coinBalance,
       purchasedSkinIds: purchasedSkinIds ?? this.purchasedSkinIds,
-      purchasedUpgradeIds:
-          purchasedUpgradeIds ?? this.purchasedUpgradeIds,
+      attackSpeedLevel: attackSpeedLevel ?? this.attackSpeedLevel,
+      damageLevel: damageLevel ?? this.damageLevel,
       level: level ?? this.level,
       mode: mode ?? this.mode,
     );
