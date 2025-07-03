@@ -36,7 +36,16 @@ class _GamePageState extends State<GamePage> {
               builder: (context, state) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Coins: ${state.coinBalance}'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      Text('Coins: ${state.coinBalance}'),
+                    ],
+                  ),
                 );
               },
             );
@@ -48,8 +57,7 @@ class _GamePageState extends State<GamePage> {
                     const Text('Game Over'),
                     ElevatedButton(
                       onPressed: () {
-                        _game.overlays.remove('gameover');
-                        _game.resumeEngine();
+                        _game.reset();
                       },
                       child: const Text('Restart'),
                     ),

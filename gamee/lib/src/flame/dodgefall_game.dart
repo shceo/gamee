@@ -8,7 +8,8 @@ import 'package:flame/input.dart';
 import '../view_model/game_cubit.dart';
 import 'bullet_component.dart';
 
-class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
+class DodgefallGame extends FlameGame
+    with HasCollisionDetection, TapDetector, PanDetector {
   DodgefallGame(this.cubit);
 
   final GameCubit cubit;
@@ -40,6 +41,8 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
       return;
     }
 
+    if (paused) return;
+
     final bulletPos =
         Vector2(player.x, player.y - player.size.y / 2 - 5);
     add(BulletComponent(bulletPos));
@@ -51,6 +54,22 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
     final dx = info.delta.global.x;
     final newX = (player.x + dx).clamp(player.size.x / 2, size.x - player.size.x / 2);
     player.position = Vector2(newX, player.y);
+  }
+
+  void reset() {
+    _started = false;
+    pauseEngine();
+    overlays
+      ..remove('gameover')
+      ..add('start');
+
+    children.whereType<BulletComponent>().forEach((b) => b.removeFromParent());
+    children
+        .whereType<ObstacleComponent>()
+        .forEach((o) => o.removeFromParent());
+
+    spawner.reset();
+    player.position = Vector2(size.x / 2, size.y - 60);
   }
 }
 
@@ -117,5 +136,9 @@ class _Spawner extends Component with HasGameRef<DodgefallGame> {
         ..position = Vector2(_rand.nextDouble() * gameRef.size.x, position.y);
       gameRef.add(ob);
     }
+  }
+
+  void reset() {
+    _timer = 0;
   }
 }
