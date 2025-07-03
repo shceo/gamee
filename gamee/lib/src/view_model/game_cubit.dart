@@ -24,12 +24,12 @@ class GameCubit extends Cubit<GameState> {
   };
 
   static const Map<int, int> _upgradeBasePrices = {
-    1: 150,
+    1: 50,
     2: 200,
   };
 
   int get bulletDamage => 1 + state.damageLevel;
-  double get shootInterval => 0.2 / (1 + state.attackSpeedLevel * 0.1);
+  double get shootInterval => 1.0 / (1 + state.attackSpeedLevel * 0.1);
 
   int upgradePrice(int id) {
     final base = _upgradeBasePrices[id] ?? 0;
