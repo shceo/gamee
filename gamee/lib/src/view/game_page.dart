@@ -49,7 +49,7 @@ class GamePage extends StatelessWidget {
                           ),
                         ),
                         Image.asset(
-                          'assets/enemy.png',
+                          'assets/images/enemy.png',
                           width: 30,
                           height: 30,
                           fit: BoxFit.contain,
@@ -67,7 +67,7 @@ class GamePage extends StatelessWidget {
                   bottom: 20,
                   left: state.playerX * MediaQuery.of(context).size.width - 15,
                   child: Image.asset(
-                    'assets/player.png',
+                    'assets/images/player.png',
                     width: 30,
                     height: 30,
                     fit: BoxFit.contain,
