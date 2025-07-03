@@ -36,35 +36,83 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            for (final label in [
-              'Включить звук',
-              'Включить музыку',
-              'Вибрация',
-            ]) ...[
-              SizedBox(
-                width: 280,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: skyline,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+            SizedBox(
+              width: 280,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Включить звук',
+                    style: TextStyle(
+                      color: skyline,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Switch(
-                      value: true,
-                      onChanged: (_) {},
-                      activeColor: Colors.white,
-                      activeTrackColor: skyline,
-                    ),
-                  ],
-                ),
+                  ),
+                  Switch(
+                    value: true,
+                    onChanged: (_) {},
+                    activeColor: Colors.white,
+                    activeTrackColor: skyline,
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
+            ),
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: 280,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Включить музыку',
+                    style: TextStyle(
+                      color: skyline,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Switch(
+                    value: true,
+                    onChanged: (_) {},
+                    activeColor: Colors.white,
+                    activeTrackColor: skyline,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            BlocBuilder<GameCubit, GameState>(
+              buildWhen: (p, c) => p.vibrationEnabled != c.vibrationEnabled,
+              builder: (context, state) {
+                return SizedBox(
+                  width: 280,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Вибрация',
+                        style: TextStyle(
+                          color: skyline,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Switch(
+                        value: state.vibrationEnabled,
+                        onChanged: (v) =>
+                            context.read<GameCubit>().toggleVibration(v),
+                        activeColor: Colors.white,
+                        activeTrackColor: skyline,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
 
             const SizedBox(height: 48),
             SizedBox(

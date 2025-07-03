@@ -10,6 +10,7 @@ import '../view_model/game_cubit.dart';
 import '../model/game_mode.dart';
 import 'bullet_component.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 class DodgefallGame extends FlameGame
     with HasCollisionDetection, TapDetector, PanDetector {
@@ -246,6 +247,9 @@ class ObstacleComponent extends SpriteComponent
   ) {
     if (other is PlayerComponent) {
       removeFromParent();
+      if (gameRef.cubit.state.vibrationEnabled) {
+        HapticFeedback.mediumImpact();
+      }
       gameRef.cubit.addCoins(5);
       gameRef.pauseEngine();
       gameRef._started = false;
