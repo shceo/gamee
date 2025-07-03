@@ -40,12 +40,28 @@ class GameCubit extends Cubit<GameState> {
   Future<void> loadState() async {
     final prefs = await SharedPreferences.getInstance();
     final coins = prefs.getInt('coins') ?? 0;
-    emit(state.copyWith(coinBalance: coins));
+    final skins = prefs.getStringList('skins')?.map(int.parse).toSet() ?? {};
+    final speed = prefs.getInt('speed') ?? 0;
+    final damage = prefs.getInt('damage') ?? 0;
+    emit(
+      state.copyWith(
+        coinBalance: coins,
+        purchasedSkinIds: skins,
+        attackSpeedLevel: speed,
+        damageLevel: damage,
+      ),
+    );
   }
 
-  Future<void> _saveCoins() async {
+  Future<void> _saveState() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('coins', state.coinBalance);
+    await prefs.setStringList(
+      'skins',
+      state.purchasedSkinIds.map((e) => e.toString()).toList(),
+    );
+    await prefs.setInt('speed', state.attackSpeedLevel);
+    await prefs.setInt('damage', state.damageLevel);
   }
 
   void startGame(GameMode mode) {
@@ -171,7 +187,7 @@ class GameCubit extends Cubit<GameState> {
 
   void addCoins(int count) {
     emit(state.copyWith(coinBalance: state.coinBalance + count));
-    _saveCoins();
+    _saveState();
   }
 
   void purchaseSkin(int id) {
@@ -183,7 +199,7 @@ class GameCubit extends Cubit<GameState> {
         purchasedSkinIds: {...state.purchasedSkinIds, id},
       ),
     );
-    _saveCoins();
+    _saveState();
   }
 
   void purchaseUpgrade(int id) {
@@ -203,7 +219,7 @@ class GameCubit extends Cubit<GameState> {
         damageLevel: state.damageLevel + 1,
       ));
     }
-    _saveCoins();
+    _saveState();
   }
 
   Future<void> resetProgress() async {
