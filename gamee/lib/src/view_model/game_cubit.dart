@@ -14,6 +14,7 @@ class GameCubit extends Cubit<GameState> {
 
   Timer? _ticker;
   Timer? _shootTicker;
+  bool _shooting = false;
   final Random _random = Random();
   int _idCounter = 0;
 
@@ -31,14 +32,29 @@ class GameCubit extends Cubit<GameState> {
   void startGame(GameMode mode) {
     _ticker?.cancel();
     _shootTicker?.cancel();
+    _shooting = false;
     emit(GameState(mode: mode, isRunning: true, playerX: 0.5));
     _ticker = Timer.periodic(const Duration(milliseconds: 16), _onTick);
-    _shootTicker = Timer.periodic(const Duration(milliseconds: 300), (_) => _spawnBullet());
+  }
+
+  void startShooting() {
+    if (_shooting) return;
+    _shooting = true;
+    _spawnBullet();
+    _shootTicker =
+        Timer.periodic(const Duration(milliseconds: 300), (_) => _spawnBullet());
+  }
+
+  void stopShooting() {
+    if (!_shooting) return;
+    _shooting = false;
+    _shootTicker?.cancel();
+    _shootTicker = null;
   }
 
   void _spawnBullet() {
     if (!state.isRunning) return;
-    final newBullet = Bullet(id: _idCounter++, x: state.playerX, y: 0.85);
+    final newBullet = Bullet(id: _idCounter++, x: state.playerX, y: 0.9);
     emit(state.copyWith(bullets: [...state.bullets, newBullet]));
   }
 
@@ -99,7 +115,7 @@ class GameCubit extends Cubit<GameState> {
 
     // check player collision
     for (final ob in updatedObstacles) {
-      if (ob.y > 0.9 && (ob.x - state.playerX).abs() < 0.05) {
+      if (ob.y > 0.95 && (ob.x - state.playerX).abs() < 0.05) {
         emit(state.copyWith(isRunning: false, isGameOver: true));
         _ticker?.cancel();
         _shootTicker?.cancel();

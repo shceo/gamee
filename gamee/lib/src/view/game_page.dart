@@ -15,18 +15,26 @@ class GamePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(mode == GameMode.arcade ? 'Аркада' : 'Бесконечный')),
       body: GestureDetector(
-        onTap: () {
+        onPanStart: (d) {
           if (!cubit.state.isRunning) {
             cubit.startGame(mode);
           }
+          final box = context.findRenderObject() as RenderBox?;
+          if (box != null) {
+            final local = box.globalToLocal(d.globalPosition);
+            cubit.movePlayer(local.dx / box.size.width);
+          }
+          cubit.startShooting();
         },
-        onHorizontalDragUpdate: (d) {
+        onPanUpdate: (d) {
           final box = context.findRenderObject() as RenderBox?;
           if (box != null) {
             final local = box.globalToLocal(d.globalPosition);
             cubit.movePlayer(local.dx / box.size.width);
           }
         },
+        onPanEnd: (_) => cubit.stopShooting(),
+        onPanCancel: cubit.stopShooting,
         child: BlocBuilder<GameCubit, GameState>(
           builder: (context, state) {
             return Stack(
@@ -64,7 +72,7 @@ class GamePage extends StatelessWidget {
                     child: Container(width: 4, height: 10, color: Colors.yellow),
                   ),
                 Positioned(
-                  bottom: 20,
+                  bottom: state.isRunning ? 20 : 70,
                   left: state.playerX * MediaQuery.of(context).size.width - 15,
                   child: Image.asset(
                     'assets/images/player.png',
@@ -99,26 +107,27 @@ class GamePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    color: Colors.grey.shade900,
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const StorePage()),
+                if (!state.isRunning)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      color: Colors.grey.shade900,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const StorePage()),
+                            ),
+                            child: const Text('Магазин'),
                           ),
-                          child: const Text('Магазин'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             );
           },
