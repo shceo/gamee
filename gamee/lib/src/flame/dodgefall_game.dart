@@ -33,6 +33,7 @@ class DodgefallGame extends FlameGame
   double spawnInterval = 1.0;
   double _levelTimer = 0;
   double _levelDuration = 30;
+  int completedLevel = 0;
   int get obstacleHealth =>
       mode == GameMode.arcade
           ? levelNotifier.value
@@ -72,8 +73,15 @@ class DodgefallGame extends FlameGame
     pauseEngine();
     overlays
       ..remove('gameover')
+      ..remove('levelcomplete')
       ..add('start');
     cubit.restart();
+  }
+
+  void continueAfterLevel() {
+    overlays.remove('levelcomplete');
+    _started = true;
+    resumeEngine();
   }
 
   @override
@@ -157,8 +165,13 @@ class DodgefallGame extends FlameGame
         if (_levelTimer >= _levelDuration) {
           _levelTimer = 0;
           _levelDuration += 5;
+          completedLevel = levelNotifier.value;
           levelNotifier.value += 1;
           spawnInterval = (spawnInterval * 0.9).clamp(0.3, 10.0);
+          _started = false;
+          _stopShooting();
+          pauseEngine();
+          overlays.add('levelcomplete');
         }
       } else {
         // endless mode gradually increases spawn rate
@@ -218,8 +231,8 @@ class ObstacleComponent extends SpriteComponent
       _velocity.y = -_velocity.y * _bounceDamping;
       _velocity.x += (_rand.nextDouble() * 2 - 1) *
           _initialSpeed * _horizontalFactor;
-    } else if (y <= size.y / 2 && _velocity.y < 0) {
-      y = size.y / 2;
+    } else if (y <= gameRef.size.y / 2 && _velocity.y < 0) {
+      y = gameRef.size.y / 2;
       _velocity.y = -_velocity.y * _bounceDamping;
     }
 

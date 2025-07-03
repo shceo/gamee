@@ -166,6 +166,46 @@ class _GamePageState extends State<GamePage> {
                   ],
                 ),
               ),
+          'levelcomplete': (ctx, game) => Center(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Поздравляем вы прошли ${game.completedLevel} уровень',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: skyline,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 280,
+                  height: 60,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: skyline,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onPressed: () {
+                      game.continueAfterLevel();
+                    },
+                    child: const Text(
+                      'Дальше',
+                      style: TextStyle(
+                        color: bora,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
         },
         initialActiveOverlays: const ['hud', 'start'],
       ),
