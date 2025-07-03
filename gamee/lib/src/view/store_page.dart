@@ -7,16 +7,12 @@ import '../view_model/game_cubit.dart';
 class StorePage extends StatelessWidget {
   const StorePage({super.key});
 
-  // фирменные цвета
   static const Color bora = Color(0xFFEAECC6);
   static const Color skyline = Color(0xFF2BC0E4);
-  // фон карточек
   static const Color surface = Color(0xFFDCEEEA);
 
   static const List<Map<String, dynamic>> _skins = [
     {'title': 'Default', 'image': 'assets/images/player.png', 'price': 100},
-    // {'title': 'Red', 'image': 'assets/images/skin_red.png', 'price': 200},
-    // {'title': 'Purple', 'image': 'assets/images/skin_purple.png', 'price': 300},
   ];
   static const List<Map<String, dynamic>> _upgrades = [
     {
@@ -134,7 +130,7 @@ class StorePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      onPressed: () {}, // заглушка
+                                      onPressed: () {},
                                       child: Text(
                                         item['price']!.toString(),
                                         style: const TextStyle(
@@ -165,7 +161,7 @@ class StorePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      onPressed: () {}, // заглушка
+                      onPressed: () {},
                       child: const Text(
                         'Buy',
                         style: TextStyle(

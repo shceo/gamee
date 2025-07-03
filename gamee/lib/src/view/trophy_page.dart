@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class TrophyPage extends StatelessWidget {
   const TrophyPage({super.key});
 
-  // фирменные цвета
   static const Color bora = Color(0xFFEAECC6);
   static const Color skyline = Color(0xFF2BC0E4);
 
@@ -25,7 +24,6 @@ class TrophyPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Заголовок
             const Text(
               'Достижения',
               style: TextStyle(
@@ -35,14 +33,12 @@ class TrophyPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // Иконка трофея
             const Icon(
               Icons.emoji_events,
               size: 80,
               color: Color(0xFF2BC0E4),
             ),
             const SizedBox(height: 16),
-            // Подсказка
             const Text(
               'Тут будут награды и рекорды',
               textAlign: TextAlign.center,
