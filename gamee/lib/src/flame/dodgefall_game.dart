@@ -190,30 +190,41 @@ class PlayerComponent extends SpriteComponent
 
 class ObstacleComponent extends SpriteComponent
     with CollisionCallbacks, HasGameRef<DodgefallGame> {
-  ObstacleComponent({required this.speed, this.health = 1})
-    : super(size: Vector2.all(30), anchor: Anchor.center);
+  ObstacleComponent({required double speed, this.health = 1})
+      : _initialSpeed = speed,
+        super(size: Vector2.all(30), anchor: Anchor.center);
 
-  double speed;
+  final double _initialSpeed;
   int health;
+  final Vector2 _velocity = Vector2.zero();
+  final Random _rand = Random();
+  static const double _bounceDamping = 0.8;
+  static const double _horizontalFactor = 0.3;
 
   @override
   Future<void> onLoad() async {
     sprite = Sprite(gameRef.images.fromCache('enemy.png'));
     angle = pi;
+    _velocity.setValues(0, _initialSpeed);
     add(RectangleHitbox());
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    y += speed * dt;
-    if (y >= gameRef.size.y - size.y / 2 && speed > 0) {
+    position += _velocity * dt;
+    if (y >= gameRef.size.y - size.y / 2 && _velocity.y > 0) {
       y = gameRef.size.y - size.y / 2;
-      speed = -speed;
-    } else if (y <= size.y / 2 && speed < 0) {
+      _velocity.y = -_velocity.y * _bounceDamping;
+      _velocity.x += (_rand.nextDouble() * 2 - 1) *
+          _initialSpeed * _horizontalFactor;
+    } else if (y <= size.y / 2 && _velocity.y < 0) {
       y = size.y / 2;
-      speed = -speed;
+      _velocity.y = -_velocity.y * _bounceDamping;
     }
+
+    _velocity.x *= 0.99;
+    x = x.clamp(size.x / 2, gameRef.size.x - size.x / 2);
   }
 
   @override
