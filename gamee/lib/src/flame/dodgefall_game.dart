@@ -8,13 +8,26 @@ import 'package:flame/input.dart';
 import '../view_model/game_cubit.dart';
 import 'bullet_component.dart';
 
-class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
+class DodgefallGame extends FlameGame
+    with HasCollisionDetection, TapDetector, PanDetector {
   DodgefallGame(this.cubit);
 
   final GameCubit cubit;
   late final PlayerComponent player;
   late final _Spawner spawner;
   bool _started = false;
+
+  void reset() {
+    _started = false;
+    children.whereType<ObstacleComponent>().forEach((e) => e.removeFromParent());
+    children.whereType<BulletComponent>().forEach((b) => b.removeFromParent());
+    player.position = Vector2(size.x / 2, size.y - 60);
+    pauseEngine();
+    overlays
+      ..remove('gameover')
+      ..add('start');
+    cubit.restart();
+  }
 
   @override
   Future<void> onLoad() async {
@@ -32,6 +45,10 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
 
   @override
   void onTapDown(TapDownInfo info) {
+    if (overlays.isActive('gameover')) {
+      super.onTapDown(info);
+      return;
+    }
     if (!_started) {
       _started = true;
       overlays.remove('start');
@@ -94,6 +111,7 @@ class ObstacleComponent extends SpriteComponent
       removeFromParent();
       gameRef.cubit.addCoins(5);
       gameRef.pauseEngine();
+      gameRef._started = false;
       gameRef.overlays.add('gameover');
     }
     super.onCollisionStart(intersectionPoints, other);
