@@ -18,8 +18,8 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
   @override
   Future<void> onLoad() async {
     await images.loadAll([
-      'assets/images/player.png',
-      'assets/images/enemy.png',
+      'player.png',
+      'enemy.png',
     ]);
     player = PlayerComponent()..position = size / 2;
     add(player);
@@ -49,7 +49,7 @@ class PlayerComponent extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    sprite = Sprite(gameRef.images.fromCache('assets/images/player.png'));
+    sprite = Sprite(gameRef.images.fromCache('player.png'));
     add(RectangleHitbox());
   }
 }
@@ -64,7 +64,7 @@ class ObstacleComponent extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    sprite = Sprite(gameRef.images.fromCache('assets/images/enemy.png'));
+    sprite = Sprite(gameRef.images.fromCache('enemy.png'));
     add(RectangleHitbox());
   }
 
