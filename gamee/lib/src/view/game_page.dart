@@ -18,6 +18,10 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   late DodgefallGame _game;
 
+  // фирменные цвета
+  static const Color bora = Color(0xFFEAECC6);
+  static const Color skyline = Color(0xFF2BC0E4);
+
   @override
   void initState() {
     super.initState();
@@ -28,81 +32,145 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bora,
       body: GameWidget<DodgefallGame>(
+        
         game: _game,
         overlayBuilderMap: {
+          // — HUD (строка сверху) —
           'hud': (ctx, game) {
-            final g = game as DodgefallGame;
+            final textStyle = const TextStyle(
+              color: skyline,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            );
             Widget modeInfo;
-            if (g.mode == GameMode.endless) {
+            if (game.mode == GameMode.endless) {
               modeInfo = ValueListenableBuilder<double>(
-                valueListenable: g.elapsed,
-                builder: (_, t, __) => Text('Time: ${t.toStringAsFixed(1)}'),
+                valueListenable: game.elapsed,
+                builder:
+                    (_, t, __) =>
+                        Text('Time: ${t.toStringAsFixed(1)}', style: textStyle),
               );
             } else {
               modeInfo = ValueListenableBuilder<int>(
-                valueListenable: g.levelNotifier,
-                builder: (_, l, __) => Text('Level: $l'),
+                valueListenable: game.levelNotifier,
+                builder: (_, l, __) => Text('Level: $l', style: textStyle),
               );
             }
+
             return SafeArea(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      _game.reset();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  modeInfo,
-                  BlocBuilder<GameCubit, GameState>(
-                    builder: (context, state) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Coins: ${state.coinBalance}'),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-          'gameover': (_, __) => Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Game Over'),
-                    ElevatedButton(
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      color: skyline,
+                      iconSize: 32,
                       onPressed: () {
                         _game.reset();
+                        Navigator.pop(context);
                       },
-                      child: const Text('Restart'),
+                    ),
+                    modeInfo,
+                    BlocBuilder<GameCubit, GameState>(
+                      builder:
+                          (_, state) => Text(
+                            'Coins: ${state.coinBalance}',
+                            style: textStyle,
+                          ),
                     ),
                   ],
                 ),
               ),
-          'start': (_, __) => Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      'нажмите что бы начать',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 32,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pushNamed(context, '/store'),
-                        child: const Text('StorePage'),
+            );
+          },
+
+          // — Start Overlay —
+          'start':
+              (ctx, __) => SafeArea(
+                child: Stack(
+                  children: [
+                    // Центр: «нажмите что бы начать»
+                    Center(
+                      child: Text(
+                        'нажмите\nчто бы начать',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: skyline,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    Positioned(
+                      bottom: 32,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: IconButton(
+                          icon: const Icon(Icons.shopping_cart_outlined),
+                          iconSize: 64,
+                          color: skyline,
+                          onPressed: () {
+                            _game.pauseEngine();
+                            Navigator.pushNamed(ctx, '/store');
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          'gameover':
+              (ctx, __) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // «Game Over»
+                    const Text(
+                      'Game Over',
+                      style: TextStyle(
+                        color: skyline,
+                        fontSize: 64,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: 280,
+                      height: 60,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: skyline,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: () {
+                          _game.reset();
+                        },
+                        child: const Text(
+                          'Restart',
+                          style: TextStyle(
+                            color: bora,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Image.asset(
+                      'assets/images/player.png',
+                      width: 64,
+                      height: 64,
+                    ),
+                  ],
+                ),
               ),
         },
         initialActiveOverlays: const ['hud', 'start'],

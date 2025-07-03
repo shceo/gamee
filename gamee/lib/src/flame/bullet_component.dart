@@ -9,7 +9,7 @@ class BulletComponent extends RectangleComponent
       : super(
           position: position,
           size: Vector2(4, 10),
-          paint: Paint()..color = const Color(0xFFFFFF00),
+          paint: Paint()..color = const Color.fromARGB(255, 13, 255, 0),
           anchor: Anchor.center,
         );
 

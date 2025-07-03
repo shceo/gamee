@@ -1,132 +1,304 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../model/skin_item.dart';
-import '../model/upgrade_item.dart';
-import '../view_model/game_cubit.dart';
-import '../view_model/game_state.dart';
-
-const List<SkinItem> _skins = [
-  SkinItem(id: 1, title: 'Default', image: 'assets/images/player.png', price: 100),
-  SkinItem(id: 2, title: 'Enemy', image: 'assets/images/enemy.png', price: 200),
-];
-
-const List<UpgradeItem> _upgrades = [
-  UpgradeItem(
-    id: 1,
-    title: 'Attack Speed',
-    description: 'Shoot faster',
-    icon: Icons.flash_on,
-    price: 50,
-  ),
-  UpgradeItem(
-    id: 2,
-    title: 'Damage',
-    description: 'Increase bullet damage',
-    icon: Icons.whatshot,
-    price: 200,
-  ),
-];
 
 class StorePage extends StatelessWidget {
   const StorePage({super.key});
 
+  // фирменные цвета
+  static const Color bora = Color(0xFFEAECC6);
+  static const Color skyline = Color(0xFF2BC0E4);
+  // фон карточек
+  static const Color surface = Color(0xFFDCEEEA);
+
+  static const List<Map<String, dynamic>> _skins = [
+    {'title': 'Default', 'image': 'assets/images/player.png', 'price': 100},
+    // {'title': 'Red', 'image': 'assets/images/skin_red.png', 'price': 200},
+    // {'title': 'Purple', 'image': 'assets/images/skin_purple.png', 'price': 300},
+  ];
+  static const List<Map<String, dynamic>> _upgrades = [
+    {
+      'title': 'Attack Speed',
+      'icon': Icons.flash_on,
+      'price': 150,
+      'lines': ['Shoot faster', 'Speed: 1.2/s'],
+    },
+    {
+      'title': 'Damage',
+      'icon': Icons.whatshot,
+      'price': 200,
+      'lines': ['Increase bullet damage', 'Damage: 1'],
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameCubit, GameState>(
-      builder: (context, state) {
-        return DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Store'),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Center(child: Text('Coins: ${state.coinBalance}')),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: bora,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: skyline,
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: const Text(
+            'Store',
+            style: TextStyle(
+              color: skyline,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: false,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child: Text(
+                  'Coins: 75',
+                  style: TextStyle(color: skyline, fontSize: 20),
                 ),
-              ],
-              bottom: const TabBar(
-                tabs: [
-                  Tab(text: 'Skins'),
-                  Tab(text: 'Upgrades'),
-                ],
               ),
             ),
-            body: TabBarView(
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48),
+            child: Column(
               children: [
-                _buildSkins(context, state),
-                _buildUpgrades(context, state),
+                TabBar(
+                  labelColor: skyline,
+                  unselectedLabelColor: skyline.withOpacity(0.6),
+                  indicatorColor: skyline,
+                  indicatorWeight: 4,
+                  tabs: const [Tab(text: 'Skins'), Tab(text: 'Upgrades')],
+                ),
+                Container(height: 1, color: skyline.withOpacity(0.3)),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+        body: TabBarView(
+          children: [
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children:
+                          _skins.map((item) {
+                            return Container(
+                              width: 140,
+                              height: 200,
+                              margin: const EdgeInsets.only(right: 16),
+                              decoration: BoxDecoration(
+                                color: surface,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Image.asset(
+                                    item['image'],
+                                    width: 64,
+                                    height: 64,
+                                  ),
+                                  Text(
+                                    item['title'],
+                                    style: const TextStyle(
+                                      color: skyline,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 100,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: skyline,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {}, // заглушка
+                                      child: Text(
+                                        item['price']!.toString(),
+                                        style: const TextStyle(
+                                          color: bora,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    width: 280,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: skyline,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: () {}, // заглушка
+                      child: const Text(
+                        'Buy',
+                        style: TextStyle(
+                          color: bora,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
 
-  Widget _buildSkins(BuildContext context, GameState state) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: _skins.length,
-      itemBuilder: (context, index) {
-        final item = _skins[index];
-        final disabled =
-            state.coinBalance < item.price || state.purchasedSkinIds.contains(item.id);
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(item.image, width: 64, height: 64),
-              const SizedBox(height: 4),
-              Text(item.title),
-              Text('Price: ${item.price}'),
-              const SizedBox(height: 4),
-              ElevatedButton(
-                onPressed: disabled
-                    ? null
-                    : () => context.read<GameCubit>().purchaseSkin(item.id),
-                child: const Text('Buy'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildUpgrades(BuildContext context, GameState state) {
-    return ListView.builder(
-      itemCount: _upgrades.length,
-      itemBuilder: (context, index) {
-        final cubit = context.read<GameCubit>();
-        final up = _upgrades[index];
-        final price = cubit.upgradePrice(up.id);
-        final disabled = state.coinBalance < price;
-        String current;
-        if (up.id == 1) {
-          current = 'Speed: ${(1 / cubit.shootInterval).toStringAsFixed(1)}/s';
-        } else {
-          current = 'Damage: ${cubit.bulletDamage}';
-        }
-        return ListTile(
-          leading: Icon(up.icon),
-          title: Text(up.title),
-          subtitle: Text('${up.description}\n$current'),
-          trailing: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('$price'),
-              const SizedBox(height: 4),
-              ElevatedButton(
-                onPressed: disabled ? null : () => cubit.purchaseUpgrade(up.id),
-                child: const Text('Buy'),
-              ),
-            ],
-          ),
-        );
-      },
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children:
+                          _upgrades.map((item) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: surface,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 16,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    item['icon'] as IconData,
+                                    size: 40,
+                                    color: skyline,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['title']!,
+                                          style: const TextStyle(
+                                            color: skyline,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          (item['lines']! as List<String>)[0],
+                                          style: const TextStyle(
+                                            color: skyline,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          (item['lines']! as List<String>)[1],
+                                          style: const TextStyle(
+                                            color: skyline,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  SizedBox(
+                                    width: 80,
+                                    height: 48,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: skyline,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {},
+                                      child: Text(
+                                        item['price']!.toString(),
+                                        style: const TextStyle(
+                                          color: bora,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Center(
+                  child: SizedBox(
+                    width: 280,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: skyline,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: () {}, // заглушка
+                      child: const Text(
+                        'Buy',
+                        style: TextStyle(
+                          color: bora,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

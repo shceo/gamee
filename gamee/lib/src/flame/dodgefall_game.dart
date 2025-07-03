@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/input.dart';
+import 'package:flutter/material.dart';
 import '../view_model/game_cubit.dart';
 import '../model/game_mode.dart';
 import 'bullet_component.dart';
@@ -13,6 +14,10 @@ import 'package:flutter/foundation.dart';
 class DodgefallGame extends FlameGame
     with HasCollisionDetection, TapDetector, PanDetector {
   DodgefallGame(this.cubit, this.mode);
+  @override
+  Color backgroundColor() {
+    return const Color(0xFFEAECC6);
+  }
 
   final GameCubit cubit;
   final GameMode mode;
