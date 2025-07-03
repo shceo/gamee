@@ -21,7 +21,7 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
-    _game = DodgefallGame(context.read<GameCubit>());
+    _game = DodgefallGame(context.read<GameCubit>(), widget.mode);
     _game.pauseEngine();
   }
 
@@ -32,6 +32,19 @@ class _GamePageState extends State<GamePage> {
         game: _game,
         overlayBuilderMap: {
           'hud': (ctx, game) {
+            final g = game as DodgefallGame;
+            Widget modeInfo;
+            if (g.mode == GameMode.endless) {
+              modeInfo = ValueListenableBuilder<double>(
+                valueListenable: g.elapsed,
+                builder: (_, t, __) => Text('Time: ${t.toStringAsFixed(1)}'),
+              );
+            } else {
+              modeInfo = ValueListenableBuilder<int>(
+                valueListenable: g.levelNotifier,
+                builder: (_, l, __) => Text('Level: $l'),
+              );
+            }
             return SafeArea(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,6 +56,7 @@ class _GamePageState extends State<GamePage> {
                       Navigator.pop(context);
                     },
                   ),
+                  modeInfo,
                   BlocBuilder<GameCubit, GameState>(
                     builder: (context, state) {
                       return Padding(
