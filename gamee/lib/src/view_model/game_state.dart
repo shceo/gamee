@@ -14,6 +14,7 @@ class GameState {
   final int damageLevel;
   final int level;
   final GameMode mode;
+  final bool vibrationEnabled;
 
   const GameState({
     this.isRunning = false,
@@ -27,6 +28,7 @@ class GameState {
     this.damageLevel = 0,
     this.level = 1,
     this.mode = GameMode.arcade,
+    this.vibrationEnabled = true,
   });
 
   GameState copyWith({
@@ -41,6 +43,7 @@ class GameState {
     int? damageLevel,
     int? level,
     GameMode? mode,
+    bool? vibrationEnabled,
   }) {
     return GameState(
       isRunning: isRunning ?? this.isRunning,
@@ -54,6 +57,7 @@ class GameState {
       damageLevel: damageLevel ?? this.damageLevel,
       level: level ?? this.level,
       mode: mode ?? this.mode,
+      vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
     );
   }
 }

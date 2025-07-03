@@ -43,12 +43,14 @@ class GameCubit extends Cubit<GameState> {
     final skins = prefs.getStringList('skins')?.map(int.parse).toSet() ?? {};
     final speed = prefs.getInt('speed') ?? 0;
     final damage = prefs.getInt('damage') ?? 0;
+    final vibration = prefs.getBool('vibration') ?? true;
     emit(
       state.copyWith(
         coinBalance: coins,
         purchasedSkinIds: skins,
         attackSpeedLevel: speed,
         damageLevel: damage,
+        vibrationEnabled: vibration,
       ),
     );
   }
@@ -62,6 +64,7 @@ class GameCubit extends Cubit<GameState> {
     );
     await prefs.setInt('speed', state.attackSpeedLevel);
     await prefs.setInt('damage', state.damageLevel);
+    await prefs.setBool('vibration', state.vibrationEnabled);
   }
 
   void startGame(GameMode mode) {
@@ -184,6 +187,11 @@ class GameCubit extends Cubit<GameState> {
 
   void addCoins(int count) {
     emit(state.copyWith(coinBalance: state.coinBalance + count));
+    _saveState();
+  }
+
+  void toggleVibration(bool enabled) {
+    emit(state.copyWith(vibrationEnabled: enabled));
     _saveState();
   }
 
