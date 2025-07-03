@@ -119,7 +119,6 @@ class GameCubit extends Cubit<GameState> {
       }
     }
 
-    // collision bullets with obstacles
     final List<int> deadObstacles = [];
     final List<int> usedBullets = [];
     for (final bullet in updatedBullets) {
@@ -139,7 +138,6 @@ class GameCubit extends Cubit<GameState> {
     updatedBullets.removeWhere((b) => usedBullets.contains(b.id));
     updatedObstacles.removeWhere((o) => deadObstacles.contains(o.id));
 
-    // spawn new obstacle
     final spawnChance = 0.02 + (state.level - 1) * 0.005;
     if (_random.nextDouble() < spawnChance) {
       final health = state.level;
@@ -147,11 +145,10 @@ class GameCubit extends Cubit<GameState> {
     }
 
     int newLevel = state.level;
-    if (state.mode == GameMode.endless && timer.tick % 600 == 0) { // ~10s
+    if (state.mode == GameMode.endless && timer.tick % 600 == 0) {
       newLevel += 1;
     }
 
-    // check player collision
     for (final ob in updatedObstacles) {
       if (ob.y > 0.95 && (ob.x - state.playerX).abs() < 0.05) {
         emit(state.copyWith(isRunning: false, isGameOver: true));

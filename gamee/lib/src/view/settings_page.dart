@@ -6,7 +6,6 @@ import '../view_model/game_cubit.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
-  // Фирменные цвета
   static const Color bora = Color(0xFFEAECC6);
   static const Color skyline = Color(0xFF2BC0E4);
 
@@ -27,7 +26,6 @@ class SettingsPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Заголовок
             Text(
               'Настройки',
               style: TextStyle(
@@ -38,7 +36,6 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            // Переключатели-заглушки
             for (final label in [
               'Включить звук',
               'Включить музыку',
@@ -57,10 +54,9 @@ class SettingsPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // Заглушка: переключатель без реального состояния
                     Switch(
-                      value: true, // показываем «включено»
-                      onChanged: (_) {}, // заглушка
+                      value: true,
+                      onChanged: (_) {},
                       activeColor: Colors.white,
                       activeTrackColor: skyline,
                     ),
@@ -87,7 +83,7 @@ class SettingsPage extends StatelessWidget {
                     context: context,
                     builder:
                         (context) => Dialog(
-                          backgroundColor: SettingsPage.bora, // #EAECC6
+                          backgroundColor: SettingsPage.bora,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -101,18 +97,16 @@ class SettingsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Заголовок
                                 Text(
                                   'Очистить данные',
                                   style: TextStyle(
-                                    color: SettingsPage.skyline, // #2BC0E4
+                                    color: SettingsPage.skyline,
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 16),
 
-                                // Описание
                                 Text(
                                   'Вы собираетесь удалить всю историю игры. '
                                   'Это действие необратимо.',
@@ -123,12 +117,10 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 24),
 
-                                // Кнопки
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Отмена
                                     TextButton(
                                       onPressed:
                                           () => Navigator.pop(context, false),
@@ -142,7 +134,6 @@ class SettingsPage extends StatelessWidget {
                                       ),
                                     ),
 
-                                    // Удалить
                                     SizedBox(
                                       height: 48,
                                       child: ElevatedButton(

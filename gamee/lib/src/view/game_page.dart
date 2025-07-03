@@ -123,7 +123,6 @@ class _GamePageState extends State<GamePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // «Game Over»
                     const Text(
                       'Game Over',
                       style: TextStyle(

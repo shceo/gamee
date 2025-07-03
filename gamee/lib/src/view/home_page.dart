@@ -4,7 +4,6 @@ import '../model/game_mode.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  // Ваши фирменные цвета
   static const Color bora = Color(0xFFEAECC6);
   static const Color skyline = Color(0xFF2BC0E4);
 
@@ -32,7 +31,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Заголовок
             Text(
               'Dodgefall',
               style: TextStyle(
@@ -43,7 +41,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            // Кнопка «Аркада»
             SizedBox(
               width: 280,
               height: 60,
@@ -72,7 +69,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Кнопка «Бесконечный режим»
             SizedBox(
               width: 280,
               height: 60,

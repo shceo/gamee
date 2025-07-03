@@ -174,7 +174,6 @@ class DodgefallGame extends FlameGame
           overlays.add('levelcomplete');
         }
       } else {
-        // endless mode gradually increases spawn rate
         if (elapsed.value % 10 < dt) {
           spawnInterval = (spawnInterval * 0.95).clamp(0.2, 10.0);
         }
