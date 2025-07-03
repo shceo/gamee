@@ -32,13 +32,27 @@ class _GamePageState extends State<GamePage> {
         game: _game,
         overlayBuilderMap: {
           'hud': (ctx, game) {
-            return BlocBuilder<GameCubit, GameState>(
-              builder: (context, state) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Coins: ${state.coinBalance}'),
-                );
-              },
+            return SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      _game.reset();
+                      Navigator.pop(context);
+                    },
+                  ),
+                  BlocBuilder<GameCubit, GameState>(
+                    builder: (context, state) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Coins: ${state.coinBalance}'),
+                      );
+                    },
+                  ),
+                ],
+              ),
             );
           },
           'gameover': (_, __) => Center(
@@ -48,8 +62,7 @@ class _GamePageState extends State<GamePage> {
                     const Text('Game Over'),
                     ElevatedButton(
                       onPressed: () {
-                        _game.overlays.remove('gameover');
-                        _game.resumeEngine();
+                        _game.reset();
                       },
                       child: const Text('Restart'),
                     ),
