@@ -17,8 +17,6 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   late DodgefallGame _game;
-
-  // фирменные цвета
   static const Color bora = Color(0xFFEAECC6);
   static const Color skyline = Color(0xFF2BC0E4);
 
@@ -34,10 +32,8 @@ class _GamePageState extends State<GamePage> {
     return Scaffold(
       backgroundColor: bora,
       body: GameWidget<DodgefallGame>(
-        
         game: _game,
         overlayBuilderMap: {
-          // — HUD (строка сверху) —
           'hud': (ctx, game) {
             final textStyle = const TextStyle(
               color: skyline,
@@ -88,12 +84,10 @@ class _GamePageState extends State<GamePage> {
             );
           },
 
-          // — Start Overlay —
           'start':
               (ctx, __) => SafeArea(
                 child: Stack(
                   children: [
-                    // Центр: «нажмите что бы начать»
                     Center(
                       child: Text(
                         'нажмите\nчто бы начать',
