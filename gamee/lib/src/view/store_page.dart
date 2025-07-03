@@ -17,7 +17,7 @@ const List<UpgradeItem> _upgrades = [
     title: 'Attack Speed',
     description: 'Shoot faster',
     icon: Icons.flash_on,
-    price: 150,
+    price: 50,
   ),
   UpgradeItem(
     id: 2,
