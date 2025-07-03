@@ -1,13 +1,14 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/input.dart';
 import '../view_model/game_cubit.dart';
 import 'bullet_component.dart';
 
-class DodgefallGame extends FlameGame with HasCollisionDetection {
+class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
   DodgefallGame(this.cubit);
 
   final GameCubit cubit;
@@ -27,19 +28,18 @@ class DodgefallGame extends FlameGame with HasCollisionDetection {
   }
 
   @override
-  void onTapDown(int pointerId, TapDownInfo info) {
+  void onTapDown(TapDownInfo info) {
     final bulletPos =
         Vector2(player.x, player.y - player.size.y / 2 - 5);
     add(BulletComponent(bulletPos));
-    super.onTapDown(pointerId, info);
+    super.onTapDown(info);
   }
 
   @override
   void onPanUpdate(DragUpdateInfo info) {
-    final delta = info.delta.game;
+    final delta = info.delta.global;
     player.position.add(delta);
     player.position.clamp(Vector2.zero(), size - player.size);
-    super.onPanUpdate(info);
   }
 }
 
@@ -91,9 +91,11 @@ class ObstacleComponent extends SpriteComponent
 
 class _Spawner extends Component with HasGameRef<DodgefallGame> {
   _Spawner(this.cubit);
+
   final GameCubit cubit;
   final Random _rand = Random();
   double _timer = 0;
+  Vector2 position = Vector2.zero();
 
   @override
   void update(double dt) {
@@ -101,7 +103,7 @@ class _Spawner extends Component with HasGameRef<DodgefallGame> {
     if (_timer > 1) {
       _timer = 0;
       final ob = ObstacleComponent(speed: 100)
-        ..position = Vector2(_rand.nextDouble() * gameRef.size.x, 0);
+        ..position = Vector2(_rand.nextDouble() * gameRef.size.x, position.y);
       gameRef.add(ob);
     }
   }

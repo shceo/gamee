@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'dodgefall_game.dart' show DodgefallGame, ObstacleComponent;
