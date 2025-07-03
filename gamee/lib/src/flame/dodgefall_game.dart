@@ -29,11 +29,12 @@ class DodgefallGame extends FlameGame
   double _levelTimer = 0;
   double _levelDuration = 30;
   int get obstacleHealth =>
-      mode == GameMode.arcade ? levelNotifier.value : 1 + (elapsed.value ~/ 20).toInt();
+      mode == GameMode.arcade
+          ? levelNotifier.value
+          : 1 + (elapsed.value ~/ 20).toInt();
 
   void _shoot() {
-    final bulletPos =
-        Vector2(player.x, player.y - player.size.y / 2 - 5);
+    final bulletPos = Vector2(player.x, player.y - player.size.y / 2 - 5);
     add(BulletComponent(bulletPos));
   }
 
@@ -58,7 +59,9 @@ class DodgefallGame extends FlameGame
     spawnInterval = 1.0;
     _levelTimer = 0;
     _levelDuration = 30;
-    children.whereType<ObstacleComponent>().forEach((e) => e.removeFromParent());
+    children.whereType<ObstacleComponent>().forEach(
+      (e) => e.removeFromParent(),
+    );
     children.whereType<BulletComponent>().forEach((b) => b.removeFromParent());
     player.position = Vector2(size.x / 2, size.y - 60);
     pauseEngine();
@@ -70,12 +73,8 @@ class DodgefallGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    await images.loadAll([
-      'player.png',
-      'enemy.png',
-    ]);
-    player = PlayerComponent()
-      ..position = Vector2(size.x / 2, size.y - 60);
+    await images.loadAll(['player.png', 'enemy.png']);
+    player = PlayerComponent()..position = Vector2(size.x / 2, size.y - 60);
     add(player);
     spawner = _Spawner()..position = Vector2.zero();
     add(spawner);
@@ -136,7 +135,10 @@ class DodgefallGame extends FlameGame
   @override
   void onPanUpdate(DragUpdateInfo info) {
     final dx = info.delta.global.x;
-    final newX = (player.x + dx).clamp(player.size.x / 2, size.x - player.size.x / 2);
+    final newX = (player.x + dx).clamp(
+      player.size.x / 2,
+      size.x - player.size.x / 2,
+    );
     player.position = Vector2(newX, player.y);
   }
 
@@ -184,7 +186,7 @@ class PlayerComponent extends SpriteComponent
 class ObstacleComponent extends SpriteComponent
     with CollisionCallbacks, HasGameRef<DodgefallGame> {
   ObstacleComponent({required this.speed, this.health = 1})
-      : super(size: Vector2.all(30), anchor: Anchor.center);
+    : super(size: Vector2.all(30), anchor: Anchor.center);
 
   double speed;
   int health;
@@ -209,7 +211,10 @@ class ObstacleComponent extends SpriteComponent
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
     if (other is PlayerComponent) {
       removeFromParent();
       gameRef.cubit.addCoins(5);
@@ -236,8 +241,7 @@ class _Spawner extends Component with HasGameRef<DodgefallGame> {
       final ob = ObstacleComponent(
         speed: 100 + gameRef.levelNotifier.value * 10,
         health: gameRef.obstacleHealth,
-      )..position =
-          Vector2(_rand.nextDouble() * gameRef.size.x, position.y);
+      )..position = Vector2(_rand.nextDouble() * gameRef.size.x, position.y);
       gameRef.add(ob);
     }
   }
