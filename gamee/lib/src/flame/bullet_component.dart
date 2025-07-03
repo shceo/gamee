@@ -29,7 +29,7 @@ class BulletComponent extends RectangleComponent
   @override
   void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is ObstacleComponent) {
-      other.health -= 1;
+      other.health -= gameRef.cubit.bulletDamage;
       if (other.health <= 0) {
         other.removeFromParent();
         gameRef.cubit.addCoins(5);

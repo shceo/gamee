@@ -100,21 +100,27 @@ class StorePage extends StatelessWidget {
     return ListView.builder(
       itemCount: _upgrades.length,
       itemBuilder: (context, index) {
+        final cubit = context.read<GameCubit>();
         final up = _upgrades[index];
-        final disabled = state.coinBalance < up.price ||
-            state.purchasedUpgradeIds.contains(up.id);
+        final price = cubit.upgradePrice(up.id);
+        final disabled = state.coinBalance < price;
+        String current;
+        if (up.id == 1) {
+          current = 'Speed: ${(1 / cubit.shootInterval).toStringAsFixed(1)}/s';
+        } else {
+          current = 'Damage: ${cubit.bulletDamage}';
+        }
         return ListTile(
           leading: Icon(up.icon),
           title: Text(up.title),
-          subtitle: Text(up.description),
+          subtitle: Text('${up.description}\n$current'),
           trailing: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${up.price}'),
+              Text('$price'),
               const SizedBox(height: 4),
               ElevatedButton(
-                onPressed:
-                    disabled ? null : () => context.read<GameCubit>().purchaseUpgrade(up.id),
+                onPressed: disabled ? null : () => cubit.purchaseUpgrade(up.id),
                 child: const Text('Buy'),
               ),
             ],

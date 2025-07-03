@@ -23,10 +23,19 @@ class GameCubit extends Cubit<GameState> {
     2: 200,
   };
 
-  static const Map<int, int> _upgradePrices = {
+  static const Map<int, int> _upgradeBasePrices = {
     1: 150,
     2: 200,
   };
+
+  int get bulletDamage => 1 + state.damageLevel;
+  double get shootInterval => 0.2 / (1 + state.attackSpeedLevel * 0.1);
+
+  int upgradePrice(int id) {
+    final base = _upgradeBasePrices[id] ?? 0;
+    final level = id == 1 ? state.attackSpeedLevel : state.damageLevel;
+    return (base * (level + 1));
+  }
 
   Future<void> loadState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -51,8 +60,10 @@ class GameCubit extends Cubit<GameState> {
     if (_shooting) return;
     _shooting = true;
     _spawnBullet();
-    _shootTicker =
-        Timer.periodic(const Duration(milliseconds: 300), (_) => _spawnBullet());
+    _shootTicker = Timer.periodic(
+      Duration(milliseconds: (shootInterval * 1000).toInt()),
+      (_) => _spawnBullet(),
+    );
   }
 
   void stopShooting() {
@@ -98,7 +109,7 @@ class GameCubit extends Cubit<GameState> {
     for (final bullet in updatedBullets) {
       for (final ob in updatedObstacles) {
         if ((bullet.x - ob.x).abs() < 0.05 && (bullet.y - ob.y).abs() < 0.05) {
-          ob.health -= 1;
+          ob.health -= bulletDamage;
           usedBullets.add(bullet.id);
           if (ob.health <= 0) {
             deadObstacles.add(ob.id);
@@ -176,16 +187,22 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void purchaseUpgrade(int id) {
-    final price = _upgradePrices[id] ?? 0;
-    if (state.coinBalance < price || state.purchasedUpgradeIds.contains(id)) {
+    final price = upgradePrice(id);
+    if (state.coinBalance < price) {
       return;
     }
-    emit(
-      state.copyWith(
+
+    if (id == 1) {
+      emit(state.copyWith(
         coinBalance: state.coinBalance - price,
-        purchasedUpgradeIds: {...state.purchasedUpgradeIds, id},
-      ),
-    );
+        attackSpeedLevel: state.attackSpeedLevel + 1,
+      ));
+    } else if (id == 2) {
+      emit(state.copyWith(
+        coinBalance: state.coinBalance - price,
+        damageLevel: state.damageLevel + 1,
+      ));
+    }
     _saveCoins();
   }
 

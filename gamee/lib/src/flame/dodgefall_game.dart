@@ -18,7 +18,7 @@ class DodgefallGame extends FlameGame
   bool _started = false;
   bool _shooting = false;
   double _shootTimer = 0;
-  final double _shootInterval = 0.2;
+  double get _shootInterval => cubit.shootInterval;
 
   void _shoot() {
     final bulletPos =
