@@ -18,15 +18,25 @@ class GameCubit extends Cubit<GameState> {
   final Random _random = Random();
   int _idCounter = 0;
 
+  static const Map<int, int> _skinPrices = {
+    1: 100,
+    2: 200,
+  };
+
+  static const Map<int, int> _upgradePrices = {
+    1: 150,
+    2: 200,
+  };
+
   Future<void> loadState() async {
     final prefs = await SharedPreferences.getInstance();
     final coins = prefs.getInt('coins') ?? 0;
-    emit(state.copyWith(coins: coins));
+    emit(state.copyWith(coinBalance: coins));
   }
 
   Future<void> _saveCoins() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('coins', state.coins);
+    await prefs.setInt('coins', state.coinBalance);
   }
 
   void startGame(GameMode mode) {
@@ -147,7 +157,33 @@ class GameCubit extends Cubit<GameState> {
   }
 
   void addCoins(int count) {
-    emit(state.copyWith(coins: state.coins + count));
+    emit(state.copyWith(coinBalance: state.coinBalance + count));
+    _saveCoins();
+  }
+
+  void purchaseSkin(int id) {
+    final price = _skinPrices[id] ?? 0;
+    if (state.coinBalance < price || state.purchasedSkinIds.contains(id)) return;
+    emit(
+      state.copyWith(
+        coinBalance: state.coinBalance - price,
+        purchasedSkinIds: {...state.purchasedSkinIds, id},
+      ),
+    );
+    _saveCoins();
+  }
+
+  void purchaseUpgrade(int id) {
+    final price = _upgradePrices[id] ?? 0;
+    if (state.coinBalance < price || state.purchasedUpgradeIds.contains(id)) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        coinBalance: state.coinBalance - price,
+        purchasedUpgradeIds: {...state.purchasedUpgradeIds, id},
+      ),
+    );
     _saveCoins();
   }
 

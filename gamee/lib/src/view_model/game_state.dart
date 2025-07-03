@@ -8,7 +8,9 @@ class GameState {
   final double playerX;
   final List<Obstacle> obstacles;
   final List<Bullet> bullets;
-  final int coins;
+  final int coinBalance;
+  final Set<int> purchasedSkinIds;
+  final Set<int> purchasedUpgradeIds;
   final int level;
   final GameMode mode;
 
@@ -18,7 +20,9 @@ class GameState {
     this.playerX = 0.5,
     this.obstacles = const [],
     this.bullets = const [],
-    this.coins = 0,
+    this.coinBalance = 0,
+    this.purchasedSkinIds = const {},
+    this.purchasedUpgradeIds = const {},
     this.level = 1,
     this.mode = GameMode.arcade,
   });
@@ -29,7 +33,9 @@ class GameState {
     double? playerX,
     List<Obstacle>? obstacles,
     List<Bullet>? bullets,
-    int? coins,
+    int? coinBalance,
+    Set<int>? purchasedSkinIds,
+    Set<int>? purchasedUpgradeIds,
     int? level,
     GameMode? mode,
   }) {
@@ -39,7 +45,10 @@ class GameState {
       playerX: playerX ?? this.playerX,
       obstacles: obstacles ?? this.obstacles,
       bullets: bullets ?? this.bullets,
-      coins: coins ?? this.coins,
+      coinBalance: coinBalance ?? this.coinBalance,
+      purchasedSkinIds: purchasedSkinIds ?? this.purchasedSkinIds,
+      purchasedUpgradeIds:
+          purchasedUpgradeIds ?? this.purchasedUpgradeIds,
       level: level ?? this.level,
       mode: mode ?? this.mode,
     );

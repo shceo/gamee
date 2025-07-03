@@ -84,7 +84,7 @@ class GamePage extends StatelessWidget {
                 Positioned(
                   top: 10,
                   left: 10,
-                  child: Text('Coins: ${state.coins}'),
+                  child: Text('Coins: ${state.coinBalance}'),
                 ),
                 if (!state.isRunning && !state.isGameOver)
                   Center(
