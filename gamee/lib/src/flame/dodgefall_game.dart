@@ -199,6 +199,7 @@ class ObstacleComponent extends SpriteComponent
   @override
   Future<void> onLoad() async {
     sprite = Sprite(gameRef.images.fromCache('enemy.png'));
+    angle = pi;
     add(RectangleHitbox());
   }
 
