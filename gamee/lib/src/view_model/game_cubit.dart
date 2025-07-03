@@ -206,6 +206,12 @@ class GameCubit extends Cubit<GameState> {
     _saveCoins();
   }
 
+  Future<void> resetProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    emit(const GameState());
+  }
+
   @override
   Future<void> close() {
     _ticker?.cancel();
