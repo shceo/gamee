@@ -102,6 +102,7 @@ class GameCubit extends Cubit<GameState> {
           usedBullets.add(bullet.id);
           if (ob.health <= 0) {
             deadObstacles.add(ob.id);
+            addCoins(5);
           }
           break;
         }
@@ -127,6 +128,7 @@ class GameCubit extends Cubit<GameState> {
     for (final ob in updatedObstacles) {
       if (ob.y > 0.95 && (ob.x - state.playerX).abs() < 0.05) {
         emit(state.copyWith(isRunning: false, isGameOver: true));
+        addCoins(5);
         _ticker?.cancel();
         _shootTicker?.cancel();
         return;
