@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamee/src/view_model/game_state.dart';
 
 import '../view_model/game_cubit.dart';
 
