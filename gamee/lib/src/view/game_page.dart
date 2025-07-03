@@ -36,14 +36,42 @@ class GamePage extends StatelessWidget {
                 ),
                 for (final ob in state.obstacles)
                   Positioned(
-                    left: ob.x * MediaQuery.of(context).size.width - 10,
+                    left: ob.x * MediaQuery.of(context).size.width - 15,
                     top: ob.y * MediaQuery.of(context).size.height,
-                    child: Container(width: 20, height: 20, color: Colors.red),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 30,
+                          child: LinearProgressIndicator(
+                            value: ob.health / ob.maxHealth,
+                            color: Colors.red,
+                            backgroundColor: Colors.grey.shade800,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/enemy.png',
+                          width: 30,
+                          height: 30,
+                          fit: BoxFit.contain,
+                        ),
+                      ],
+                    ),
+                  ),
+                for (final bullet in state.bullets)
+                  Positioned(
+                    left: bullet.x * MediaQuery.of(context).size.width - 2,
+                    top: bullet.y * MediaQuery.of(context).size.height,
+                    child: Container(width: 4, height: 10, color: Colors.yellow),
                   ),
                 Positioned(
                   bottom: 20,
                   left: state.playerX * MediaQuery.of(context).size.width - 15,
-                  child: Container(width: 30, height: 30, color: Colors.blue),
+                  child: Image.asset(
+                    'assets/player.png',
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                  ),
                 ),
                 Positioned(
                   top: 10,
