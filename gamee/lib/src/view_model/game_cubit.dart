@@ -24,8 +24,8 @@ class GameCubit extends Cubit<GameState> {
   };
 
   static const Map<int, int> _upgradeBasePrices = {
-    1: 50,
-    2: 200,
+    1: 20,
+    2: 20,
   };
 
   int get bulletDamage => 1 + state.damageLevel;
@@ -34,7 +34,7 @@ class GameCubit extends Cubit<GameState> {
   int upgradePrice(int id) {
     final base = _upgradeBasePrices[id] ?? 0;
     final level = id == 1 ? state.attackSpeedLevel : state.damageLevel;
-    return (base * (level + 1));
+    return base + level * 10;
   }
 
   Future<void> loadState() async {

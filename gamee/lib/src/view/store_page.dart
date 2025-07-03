@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../view_model/game_cubit.dart';
 
 class StorePage extends StatelessWidget {
   const StorePage({super.key});
@@ -16,16 +19,14 @@ class StorePage extends StatelessWidget {
   ];
   static const List<Map<String, dynamic>> _upgrades = [
     {
+      'id': 1,
       'title': 'Attack Speed',
       'icon': Icons.flash_on,
-      'price': 150,
-      'lines': ['Shoot faster', 'Speed: 1.2/s'],
     },
     {
+      'id': 2,
       'title': 'Damage',
       'icon': Icons.whatshot,
-      'price': 200,
-      'lines': ['Increase bullet damage', 'Damage: 1'],
     },
   ];
 
@@ -56,9 +57,11 @@ class StorePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Center(
-                child: Text(
-                  'Coins: 75',
-                  style: TextStyle(color: skyline, fontSize: 20),
+                child: BlocBuilder<GameCubit, GameState>(
+                  builder: (_, state) => Text(
+                    'Coins: ${state.coinBalance}',
+                    style: TextStyle(color: skyline, fontSize: 20),
+                  ),
                 ),
               ),
             ),
@@ -177,15 +180,29 @@ class StorePage extends StatelessWidget {
               ],
             ),
 
-            Column(
-              children: [
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children:
-                          _upgrades.map((item) {
+            BlocBuilder<GameCubit, GameState>(
+              builder: (context, state) {
+                final cubit = context.read<GameCubit>();
+                return Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: _upgrades.map((item) {
+                            final id = item['id'] as int;
+                            final price = cubit.upgradePrice(id);
+                            final lines = id == 1
+                                ? [
+                                    'Shoot faster',
+                                    'Speed: '
+                                        '${(1 / cubit.shootInterval).toStringAsFixed(1)}/s'
+                                  ]
+                                : [
+                                    'Increase bullet damage',
+                                    'Damage: ${cubit.bulletDamage}'
+                                  ];
                             return Container(
                               margin: const EdgeInsets.only(bottom: 16),
                               decoration: BoxDecoration(
@@ -219,7 +236,7 @@ class StorePage extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          (item['lines']! as List<String>)[0],
+                                          lines[0],
                                           style: const TextStyle(
                                             color: skyline,
                                             fontSize: 16,
@@ -227,7 +244,7 @@ class StorePage extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          (item['lines']! as List<String>)[1],
+                                          lines[1],
                                           style: const TextStyle(
                                             color: skyline,
                                             fontSize: 16,
@@ -250,9 +267,9 @@ class StorePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () => cubit.purchaseUpgrade(id),
                                       child: Text(
-                                        item['price']!.toString(),
+                                        price.toString(),
                                         style: const TextStyle(
                                           color: bora,
                                           fontSize: 16,
@@ -265,36 +282,13 @@ class StorePage extends StatelessWidget {
                               ),
                             );
                           }).toList(),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: SizedBox(
-                    width: 280,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: skyline,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      onPressed: () {}, // заглушка
-                      child: const Text(
-                        'Buy',
-                        style: TextStyle(
-                          color: bora,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                    const SizedBox(height: 24),
+                  ],
+                );
+              },
             ),
           ],
         ),
