@@ -16,9 +16,32 @@ class DodgefallGame extends FlameGame
   late final PlayerComponent player;
   late final _Spawner spawner;
   bool _started = false;
+  bool _shooting = false;
+  double _shootTimer = 0;
+  final double _shootInterval = 0.2;
+
+  void _shoot() {
+    final bulletPos =
+        Vector2(player.x, player.y - player.size.y / 2 - 5);
+    add(BulletComponent(bulletPos));
+  }
+
+  void _startShooting() {
+    if (_shooting) return;
+    _shooting = true;
+    _shoot();
+    _shootTimer = 0;
+  }
+
+  void _stopShooting() {
+    _shooting = false;
+    _shootTimer = 0;
+  }
 
   void reset() {
     _started = false;
+    _shooting = false;
+    _shootTimer = 0;
     children.whereType<ObstacleComponent>().forEach((e) => e.removeFromParent());
     children.whereType<BulletComponent>().forEach((b) => b.removeFromParent());
     player.position = Vector2(size.x / 2, size.y - 60);
@@ -53,14 +76,45 @@ class DodgefallGame extends FlameGame
       _started = true;
       overlays.remove('start');
       resumeEngine();
+      _startShooting();
       super.onTapDown(info);
       return;
     }
-
-    final bulletPos =
-        Vector2(player.x, player.y - player.size.y / 2 - 5);
-    add(BulletComponent(bulletPos));
+    _startShooting();
     super.onTapDown(info);
+  }
+
+  @override
+  void onTapUp(TapUpInfo info) {
+    _stopShooting();
+    super.onTapUp(info);
+  }
+
+  @override
+  void onTapCancel() {
+    _stopShooting();
+    super.onTapCancel();
+  }
+
+  @override
+  void onPanStart(DragStartInfo info) {
+    if (overlays.isActive('gameover')) {
+      super.onPanStart(info);
+      return;
+    }
+    if (!_started) {
+      _started = true;
+      overlays.remove('start');
+      resumeEngine();
+    }
+    _startShooting();
+    super.onPanStart(info);
+  }
+
+  @override
+  void onPanEnd(DragEndInfo info) {
+    _stopShooting();
+    super.onPanEnd(info);
   }
 
   @override
@@ -68,6 +122,18 @@ class DodgefallGame extends FlameGame
     final dx = info.delta.global.x;
     final newX = (player.x + dx).clamp(player.size.x / 2, size.x - player.size.x / 2);
     player.position = Vector2(newX, player.y);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (_shooting) {
+      _shootTimer += dt;
+      if (_shootTimer >= _shootInterval) {
+        _shootTimer = 0;
+        _shoot();
+      }
+    }
   }
 }
 
@@ -112,6 +178,7 @@ class ObstacleComponent extends SpriteComponent
       gameRef.cubit.addCoins(5);
       gameRef.pauseEngine();
       gameRef._started = false;
+      gameRef._shooting = false;
       gameRef.overlays.add('gameover');
     }
     super.onCollisionStart(intersectionPoints, other);
