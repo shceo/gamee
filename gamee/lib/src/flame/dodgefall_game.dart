@@ -14,6 +14,7 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
   final GameCubit cubit;
   late final PlayerComponent player;
   late final _Spawner spawner;
+  bool _started = false;
 
   @override
   Future<void> onLoad() async {
@@ -21,14 +22,24 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
       'player.png',
       'enemy.png',
     ]);
-    player = PlayerComponent()..position = size / 2;
+    player = PlayerComponent()
+      ..position = Vector2(size.x / 2, size.y - 60);
     add(player);
     spawner = _Spawner(cubit)..position = Vector2.zero();
     add(spawner);
+    pauseEngine();
   }
 
   @override
   void onTapDown(TapDownInfo info) {
+    if (!_started) {
+      _started = true;
+      overlays.remove('start');
+      resumeEngine();
+      super.onTapDown(info);
+      return;
+    }
+
     final bulletPos =
         Vector2(player.x, player.y - player.size.y / 2 - 5);
     add(BulletComponent(bulletPos));
@@ -37,9 +48,9 @@ class DodgefallGame extends FlameGame with HasCollisionDetection, TapDetector {
 
   @override
   void onPanUpdate(DragUpdateInfo info) {
-    final delta = info.delta.global;
-    player.position.add(delta);
-    player.position.clamp(Vector2.zero(), size - player.size);
+    final dx = info.delta.global.x;
+    final newX = (player.x + dx).clamp(player.size.x / 2, size.x - player.size.x / 2);
+    player.position = Vector2(newX, player.y);
   }
 }
 

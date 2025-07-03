@@ -22,6 +22,7 @@ class _GamePageState extends State<GamePage> {
   void initState() {
     super.initState();
     _game = DodgefallGame(context.read<GameCubit>());
+    _game.pauseEngine();
   }
 
   @override
@@ -55,8 +56,29 @@ class _GamePageState extends State<GamePage> {
                   ],
                 ),
               ),
+          'start': (_, __) => Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      'нажмите что бы начать',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 32,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pushNamed(context, '/store'),
+                        child: const Text('StorePage'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
         },
-        initialActiveOverlays: const ['hud'],
+        initialActiveOverlays: const ['hud', 'start'],
       ),
     );
   }
