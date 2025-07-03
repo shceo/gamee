@@ -2,8 +2,8 @@ import 'dart:math';
 
 class Obstacle {
   final int id;
-  double x; // 0..1
-  double y; // 0..1
+  double x; 
+  double y; 
   final double speed;
 
   Obstacle({required this.id, required this.x, this.y = 0, this.speed = 0.3});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamee/src/model/game_mode.dart';
 import 'view/home_page.dart';
 import 'view/game_page.dart';
 import 'view/settings_page.dart';
@@ -15,6 +16,7 @@ class GameeApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => GameCubit()..loadState(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Dodgefall',
         theme: ThemeData.dark(useMaterial3: true),
         routes: {
